@@ -1,6 +1,6 @@
 package spec
 
-import "github.com/hasura/kubeformation/pkg/kubeformation/provider"
+import "github.com/hasura/kubeformation/pkg/provider"
 
 // VersionedSpecHandler is the interface every handler should implement.
 type VersionedSpecHandler interface {

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	"github.com/hasura/kubeformation/pkg/kubeformation/provider"
+	"github.com/hasura/kubeformation/pkg/provider"
 )
 
 type Spec struct {

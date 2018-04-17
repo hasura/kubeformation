@@ -4,13 +4,13 @@ import (
 	"io/ioutil"
 	"os"
 
-	prv "github.com/hasura/kubeformation/pkg/kubeformation/provider"
-	"github.com/hasura/kubeformation/pkg/kubeformation/spec"
+	prv "github.com/hasura/kubeformation/pkg/provider"
+	"github.com/hasura/kubeformation/pkg/spec"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	_ "github.com/hasura/kubeformation/pkg/kubeformation/spec/v1"
+	_ "github.com/hasura/kubeformation/pkg/spec/v1"
 )
 
 var (

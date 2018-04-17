@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/hasura/kubeformation/pkg/kubeformation/cmd"
+	"github.com/hasura/kubeformation/pkg/cmd"
 	log "github.com/sirupsen/logrus"
 )
 

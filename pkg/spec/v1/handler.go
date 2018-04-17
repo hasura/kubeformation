@@ -2,9 +2,9 @@ package v1
 
 import (
 	"github.com/ghodss/yaml"
-	"github.com/hasura/kubeformation/pkg/kubeformation/provider"
-	"github.com/hasura/kubeformation/pkg/kubeformation/provider/gke"
-	"github.com/hasura/kubeformation/pkg/kubeformation/spec"
+	"github.com/hasura/kubeformation/pkg/provider"
+	"github.com/hasura/kubeformation/pkg/provider/gke"
+	"github.com/hasura/kubeformation/pkg/spec"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
