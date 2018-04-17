@@ -2,6 +2,8 @@ package v1
 
 import (
 	"github.com/ghodss/yaml"
+	"github.com/hasura/kubeformation/pkg/kubeformation/provider"
+	"github.com/hasura/kubeformation/pkg/kubeformation/provider/gke"
 	"github.com/hasura/kubeformation/pkg/kubeformation/spec"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -36,4 +38,39 @@ func (s *ClusterSpec) Read(data []byte) (spec.VersionedSpecHandler, error) {
 		return nil, errors.Wrap(err, err.Error())
 	}
 	return s, nil
+}
+
+// GenerateProviderTemplate returns a map of template files for
+// the given provider. If provider is not explicitly passed,
+// it is taken from the Spec.
+func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderType) (map[string][]byte, error) {
+	if providerType == provider.NOP {
+		switch s.Provider {
+		case "gke":
+			providerType = provider.GKE
+		case "aks":
+			providerType = provider.AKS
+		case "eks":
+			providerType = provider.EKS
+		}
+	}
+	switch providerType {
+	case provider.GKE:
+		spec := gke.Spec{
+			Name:       s.Name,
+			K8SVersion: s.K8SVersion,
+		}
+		for _, nodePool := range s.Nodes {
+			pool := gke.NodePool{
+				Name:        nodePool.Name,
+				MachineType: nodePool.Type,
+				ImageType:   nodePool.OSImage,
+				Labels:      nodePool.Labels,
+				Size:        nodePool.PoolSize,
+			}
+			spec.NodePools = append(spec.NodePools, pool)
+		}
+		return spec.MarshalYaml()
+	}
+	return nil, errors.New("unknown provider")
 }

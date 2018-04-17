@@ -4,9 +4,10 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/apex/log"
+	prv "github.com/hasura/kubeformation/pkg/kubeformation/provider"
 	"github.com/hasura/kubeformation/pkg/kubeformation/spec"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	_ "github.com/hasura/kubeformation/pkg/kubeformation/spec/v1"
@@ -46,6 +47,13 @@ var rootCmd = &cobra.Command{
 			return err
 		}
 		log.Info(handler.GetVersion())
+		files, err := handler.GenerateProviderTemplate(prv.NOP)
+		if err != nil {
+			return err
+		}
+		for k, v := range files {
+			log.Printf("%s\n%s\n\n", k, string(v))
+		}
 		return nil
 	},
 }
