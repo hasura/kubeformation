@@ -30,6 +30,19 @@ type Kubeformation struct {
 	Handler spec.VersionedSpecHandler
 }
 
+func (k *Kubeformation) ParseProvider() {
+	switch k.ProviderValue {
+	case "gke":
+		k.Provider = provider.GKE
+	case "aks":
+		k.Provider = provider.AKS
+	case "eks":
+		k.Provider = provider.EKS
+	default:
+		k.Provider = provider.NOP
+	}
+}
+
 func (k *Kubeformation) ParseInputFlags() error {
 	var err error
 	if k.InputFile == "-" {
@@ -45,18 +58,7 @@ func (k *Kubeformation) ParseInputFlags() error {
 			return err
 		}
 	}
-
-	switch k.ProviderValue {
-	case "gke":
-		k.Provider = provider.GKE
-	case "aks":
-		k.Provider = provider.AKS
-	case "eks":
-		k.Provider = provider.EKS
-	default:
-		k.Provider = provider.NOP
-	}
-
+	k.ParseProvider()
 	return nil
 }
 
