@@ -1,36 +1,43 @@
 package gke
 
-var clusterJinja = `
-resources:
-- name: {{ "{{ properties['name'] }}" }}
+var clusterJinja = `resources:
+- name: {{ .Name }}
   type: container.v1.cluster
   properties:
-    zone: {{ "{{ properties['zone'] }}" }}
+    zone: {{"{{"}} properties['zone'] {{"}}"}}
     cluster:
-      name: {{ "{{ properties['name'] }}" }}
-      initialClusterVersion: {{ .K8SVersion }}
+      name: {{ .Name }}
+      initialClusterVersion: "{{ .K8SVersion }}"
       nodePools:
       {{- range .NodePools }}
       - name: {{ $.Name }}-{{ .Name }}
-        version: {{ $.K8SVersion }}
+        version: "{{ $.K8SVersion }}"
         initialNodeCount: {{ .Size }}
         config:
-          machineType: {{ .MachineType }}
           oauthScopes:
           - https://www.googleapis.com/auth/compute
           - https://www.googleapis.com/auth/devstorage.read_only
           - https://www.googleapis.com/auth/logging.write
           - https://www.googleapis.com/auth/monitoring
+          {{- if .MachineType }}
+          machineType: {{ .MachineType }}
+          {{- else }}
+          machineType: n1-standard-1
+          {{- end -}}
+          {{- if .ImageType }}
           imageType: {{ .ImageType }}
+          {{- else }}
+          imageType: cos
+          {{- end -}}
+          {{- if .Labels }}
           labels:
           {{- range $key, $value := .Labels }}
             {{ $key }}: {{ $value }}
           {{- end -}}
-      {{- end -}}
-`
+          {{- end -}}
+      {{- end -}}`
 
-var clusterYaml = `
-imports:
+var clusterYaml = `imports:
 - path: cluster.jinja
 
 resources:
@@ -38,5 +45,4 @@ resources:
   type: cluster.jinja
   properties:
     zone: ZONE
-    name: {{ .Name }}
-`
+    name: {{ .Name }}`

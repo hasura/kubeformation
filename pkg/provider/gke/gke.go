@@ -47,14 +47,20 @@ func (s *Spec) GetType() provider.ProviderType {
 
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	var cjb bytes.Buffer
-	clusterJinjaTmpl := template.Must(template.New("cluster.jinja").Parse(clusterJinja))
-	err := clusterJinjaTmpl.Execute(&cjb, s)
+	clusterJinjaTmpl, err := template.New("cluster.jinja").Parse(clusterJinja)
+	if err != nil {
+		return nil, err
+	}
+	err = clusterJinjaTmpl.Execute(&cjb, s)
 	if err != nil {
 		return nil, err
 	}
 
 	var cyb bytes.Buffer
-	clusterYamlTmpl := template.Must(template.New("cluster.yaml").Parse(clusterYaml))
+	clusterYamlTmpl, err := template.New("cluster.yaml").Parse(clusterYaml)
+	if err != nil {
+		return nil, err
+	}
 	err = clusterYamlTmpl.Execute(&cyb, s)
 	if err != nil {
 		return nil, err
