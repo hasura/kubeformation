@@ -8,6 +8,9 @@ import (
 
 	"github.com/hasura/kubeformation/pkg/provider"
 	"github.com/hasura/kubeformation/pkg/spec"
+
+	// Register v1 spec handler
+	_ "github.com/hasura/kubeformation/pkg/spec/v1"
 )
 
 type Kubeformation struct {

@@ -1,3 +1,9 @@
+// Package gke implements GKE provider for Kubeformation. It can generate Google
+// Deployment Manager template in Jinja format. Only input required is the Spec
+// object.
+//
+// Google Deployment Manager template supports Python files, Jinja templates as
+// well as plain Yaml files.
 package gke
 
 import (
@@ -8,7 +14,7 @@ import (
 )
 
 const (
-	DefaultK8SVersion  = "v1.9.2-gke.0"
+	DefaultK8SVersion  = "1.9"
 	DefaultMachineType = "n1-standard-1"
 	DefaultImageType   = "cos"
 )

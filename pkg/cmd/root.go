@@ -3,9 +3,6 @@ package cmd
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	// Register v1 spec handler
-	_ "github.com/hasura/kubeformation/pkg/spec/v1"
 )
 
 var ErrInvalidUsage = errors.New("kubeformation: invalid command usage")

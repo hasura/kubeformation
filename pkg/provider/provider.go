@@ -1,6 +1,8 @@
+// Package provider implements the logic of generating cloud platform specific
+// templates.
 package provider
 
-// ProviderType denotes each managed kubernetes provider
+// ProviderType indicates a particular managed kubernetes provider.
 type ProviderType int
 
 const (
@@ -20,7 +22,14 @@ const (
 	EKS
 )
 
+// Provider interface should be implemented by a provider. These methods are
+// called by the spec package
 type Provider interface {
+	// GetType returns the provider type of the implementing provider
 	GetType() ProviderType
+
+	// MarshalFiles render the template files required by the provider. It
+	// returns a map of file name and data, each entry denoting a template file.
+	// Returns an error if the rendering goes wrong.
 	MarshalFiles() (map[string][]byte, error)
 }
