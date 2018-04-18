@@ -1,5 +1,7 @@
 package gke
 
+// clusterJinja is a raw Go template string used to render cluster.jinja file
+// for Google Deployment Manager.
 var clusterJinja = `resources:
 - name: {{ .Name }}
   type: container.v1.cluster
@@ -37,6 +39,7 @@ var clusterJinja = `resources:
           {{- end -}}
       {{- end -}}`
 
+// clusterYaml is the raw Go template string used to render cluster.yaml file
 var clusterYaml = `imports:
 - path: cluster.jinja
 

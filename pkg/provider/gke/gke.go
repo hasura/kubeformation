@@ -3,7 +3,10 @@
 // object.
 //
 // Google Deployment Manager template supports Python files, Jinja templates as
-// well as plain Yaml files.
+// well as plain Yaml files. Kubeformation converts cluster spec into "Spec" as
+// defined below and generate two files, cluster.jinja and cluster.yaml. These
+// files are defined as Go templates in templates.go and are rendered with Spec
+// as context.
 package gke
 
 import (
@@ -14,24 +17,49 @@ import (
 )
 
 const (
-	DefaultK8SVersion  = "1.9"
+	// Default version to be used in case cluster spec did not contain k8sVersion.
+	DefaultK8SVersion = "1.9"
+
+	// Google compute machine type to be used as default.
 	DefaultMachineType = "n1-standard-1"
-	DefaultImageType   = "cos"
+
+	// Default value for OS image.
+	DefaultImageType = "cos"
 )
 
+// Spec defines the context required to render GDM template.
 type Spec struct {
-	Name       string
+	// Name of the cluster
+	Name string
+
+	// Kubernetes version to use
 	K8SVersion string
-	NodePools  []NodePool
-}
-type NodePool struct {
-	Name        string
-	Labels      map[string]string
-	Size        int64
-	MachineType string
-	ImageType   string
+
+	// Node pools for the cluster
+	NodePools []NodePool
 }
 
+// NodePool defines a collection of nodes with similar properties in a
+// Kubernetes cluster.
+type NodePool struct {
+	// Name of the node pool
+	Name string
+
+	// Kubernetes labels to be applied to nodes in this pool
+	Labels map[string]string
+
+	// Number of nodes in this pool
+	Size int64
+
+	// Google compute engine machine type to use
+	MachineType string
+
+	// Image type to use for the nodes
+	ImageType string
+}
+
+// NewDefaultSpec returns a spec object which is complete enough to render a
+// valid GDM template.
 func NewDefaultSpec() *Spec {
 	return &Spec{
 		Name:       "gke-cluster",
@@ -47,10 +75,13 @@ func NewDefaultSpec() *Spec {
 	}
 }
 
+// GetType returns the type of this provider.
 func (s *Spec) GetType() provider.ProviderType {
 	return provider.GKE
 }
 
+// MarshalFiles returns the rendered GDM template as a map which indicates
+// filename as keys and the file content as value.
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	var cjb bytes.Buffer
 	clusterJinjaTmpl, err := template.New("cluster.jinja").Parse(clusterJinja)
