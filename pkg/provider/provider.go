@@ -22,5 +22,5 @@ const (
 
 type Provider interface {
 	GetType() ProviderType
-	MarshalYaml() (map[string][]byte, error)
+	MarshalFiles() (map[string][]byte, error)
 }

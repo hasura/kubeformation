@@ -7,6 +7,12 @@ import (
 	"github.com/hasura/kubeformation/pkg/provider"
 )
 
+const (
+	DefaultK8SVersion  = "v1.9.2-gke.0"
+	DefaultMachineType = "n1-standard-1"
+	DefaultImageType   = "cos"
+)
+
 type Spec struct {
 	Name       string
 	K8SVersion string
@@ -20,13 +26,26 @@ type NodePool struct {
 	ImageType   string
 }
 
-// TODO: Need to have a default config method
+func NewDefaultSpec() *Spec {
+	return &Spec{
+		Name:       "gke-cluster",
+		K8SVersion: DefaultK8SVersion,
+		NodePools: []NodePool{
+			NodePool{
+				Name:        "gke-cluster-np-1",
+				Size:        1,
+				MachineType: DefaultMachineType,
+				ImageType:   DefaultImageType,
+			},
+		},
+	}
+}
 
 func (s *Spec) GetType() provider.ProviderType {
 	return provider.GKE
 }
 
-func (s *Spec) MarshalYaml() (map[string][]byte, error) {
+func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	var cjb bytes.Buffer
 	clusterJinjaTmpl := template.Must(template.New("cluster.jinja").Parse(clusterJinja))
 	err := clusterJinjaTmpl.Execute(&cjb, s)

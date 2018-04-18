@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/ghodss/yaml"
 	"github.com/hasura/kubeformation/pkg/provider"
+	"github.com/hasura/kubeformation/pkg/provider/aks"
 	"github.com/hasura/kubeformation/pkg/provider/gke"
 	"github.com/hasura/kubeformation/pkg/spec"
 	"github.com/pkg/errors"
@@ -56,9 +57,11 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 	}
 	switch providerType {
 	case provider.GKE:
-		spec := gke.Spec{
-			Name:       s.Name,
-			K8SVersion: s.K8SVersion,
+		spec := gke.NewDefaultSpec()
+		spec.Name = s.Name
+		spec.K8SVersion = s.K8SVersion
+		if len(s.Nodes) > 0 {
+			spec.NodePools = []gke.NodePool{}
 		}
 		for _, nodePool := range s.Nodes {
 			pool := gke.NodePool{
@@ -70,7 +73,11 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 			}
 			spec.NodePools = append(spec.NodePools, pool)
 		}
-		return spec.MarshalYaml()
+		return spec.MarshalFiles()
+	case provider.AKS:
+		spec := aks.NewDefaultSpec()
+		// TODO: add AKS procedure
+		return spec.MarshalFiles()
 	}
 	return nil, errors.New("unknown provider")
 }
