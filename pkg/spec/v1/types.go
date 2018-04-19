@@ -17,6 +17,8 @@ type ClusterSpec struct {
 
 	// Nodes denotes the node pools for the cluster
 	Nodes []NodePool `json:"nodes"`
+
+	Volumes []Volume `json:"volumes"`
 }
 
 // NodePool indicated the spec for a Kubernetes node pools.
@@ -36,4 +38,9 @@ type NodePool struct {
 
 	// Labels to be applied to the nodes in the pool
 	Labels map[string]string `json:"labels"`
+}
+
+type Volume struct {
+	Name string `json:"name"`
+	Size int    `json:"size"`
 }

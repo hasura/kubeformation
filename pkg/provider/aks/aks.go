@@ -13,10 +13,20 @@ const (
 	DefaultVMSize     = "Standard_D2_v2"
 )
 
+var funcMap = template.FuncMap{
+	"sub": func(i int) int {
+		if i == 0 {
+			return 0
+		}
+		return i - 1
+	},
+}
+
 type Spec struct {
 	Name       string
 	K8SVersion string
 	NodePools  []NodePool
+	Volumes    []Volume
 }
 
 type NodePool struct {
@@ -24,6 +34,11 @@ type NodePool struct {
 	Count  int64
 	VMSize string
 	OSType string
+}
+
+type Volume struct {
+	Name   string
+	SizeGB int
 }
 
 func NewDefaultSpec() *Spec {
@@ -38,6 +53,7 @@ func NewDefaultSpec() *Spec {
 				VMSize: DefaultVMSize,
 			},
 		},
+		Volumes: []Volume{},
 	}
 }
 
@@ -47,7 +63,7 @@ func (s *Spec) GetType() provider.ProviderType {
 
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	var adb bytes.Buffer
-	azureDeployJinjaTmpl, err := template.New("azureDeploy.json").Parse(azureDeployJinja)
+	azureDeployJinjaTmpl, err := template.New("azureDeploy.json").Funcs(funcMap).Parse(azureDeployJinja)
 	if err != nil {
 		return nil, err
 	}
@@ -65,6 +81,8 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	//FIXME: Create new template for managed disks.
 
 	return map[string][]byte{
 		"azuredeploy.json":            adb.Bytes(),
