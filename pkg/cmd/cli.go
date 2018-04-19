@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -15,6 +17,15 @@ var rootCmd = &cobra.Command{
 	RunE:          runKubeformation,
 }
 
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Output the cli version",
+	Args:  cobra.NoArgs,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		fmt.Println(GetVersion())
+		return nil
+	},
+}
 var kfm Kubeformation
 
 func init() {
@@ -23,6 +34,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&kfm.ProviderValue, "provider", "p", "", "managed kubernetes provider for which template has to be bootstrapped")
 	rootCmd.Flags().StringVarP(&kfm.OutputDir, "output", "o", "", "output directory to write templates")
 	rootCmd.MarkFlagRequired("output")
+
+	rootCmd.AddCommand(versionCmd)
 }
 
 func Execute() error {
