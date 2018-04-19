@@ -58,14 +58,7 @@ func (s *ClusterSpec) Read(data []byte) (spec.VersionedSpecHandler, error) {
 // it is taken from the Spec.
 func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderType) (map[string][]byte, error) {
 	if providerType == provider.NOP {
-		switch s.Provider {
-		case "gke":
-			providerType = provider.GKE
-		case "aks":
-			providerType = provider.AKS
-		case "eks":
-			providerType = provider.EKS
-		}
+		providerType = provider.Parse(s.Provider)
 	}
 	switch providerType {
 	case provider.GKE:

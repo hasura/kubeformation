@@ -17,8 +17,8 @@ func TestRead(t *testing.T) {
 		err  error
 	}{
 		// TODO: add validation for the struct and test wrong formats
-		{"v1 spec yaml", []byte(`version: v1`), nil},
-		{"v1 spec json", []byte(`{"version": "v1"}`), nil},
+		{"valid v1 spec yaml", []byte(`version: v1`), nil},
+		{"valid v1 spec json", []byte(`{"version": "v1"}`), nil},
 		{"invalid v1 spec", []byte(`version: v2`), ErrSpecParseFailure},
 		{"invalid yaml", []byte(`version: v1:`), ErrSpecParseFailure},
 		{"empty data", []byte(``), ErrEmtpyInput},
@@ -33,8 +33,4 @@ func TestRead(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestGenerateProviderTemplate(t *testing.T) {
-
 }

@@ -66,7 +66,7 @@ func NewDefaultSpec() *Spec {
 		K8SVersion: DefaultK8SVersion,
 		NodePools: []NodePool{
 			NodePool{
-				Name:        "gke-cluster-np-1",
+				Name:        "np-1",
 				Size:        1,
 				MachineType: DefaultMachineType,
 				ImageType:   DefaultImageType,
@@ -82,6 +82,7 @@ func (s *Spec) GetType() provider.ProviderType {
 
 // MarshalFiles returns the rendered GDM template as a map which indicates
 // filename as keys and the file content as value.
+// FIXME: test does not capture the template errors.
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	var cjb bytes.Buffer
 	clusterJinjaTmpl, err := template.New("cluster.jinja").Parse(clusterJinja)
