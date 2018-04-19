@@ -14,6 +14,8 @@ import (
 // a known format
 var ErrSpecParseFailure = errors.New("kubeformation: parsing spec failed")
 
+var ErrEmtpyInput = errors.New("kubeformation: empty input data")
+
 // version string for this handler
 const version string = "v1"
 
@@ -29,14 +31,24 @@ func init() {
 
 // GetVersion returns the current spec version
 func (s *ClusterSpec) GetVersion() string {
-	return s.Version
+	return version
 }
 
 // Read returns a Handler after reading the spec
 func (s *ClusterSpec) Read(data []byte) (spec.VersionedSpecHandler, error) {
+	// make sure data is not empty
+	if len(data) == 0 {
+		return nil, ErrEmtpyInput
+	}
 	err := yaml.Unmarshal(data, s)
 	if err != nil {
-		return nil, errors.Wrap(err, err.Error())
+		log.Debug(err)
+		return nil, ErrSpecParseFailure
+	}
+	// make sure that the data obtained has the correct version
+	if s.Version != version {
+		log.Debug(err)
+		return nil, ErrSpecParseFailure
 	}
 	return s, nil
 }

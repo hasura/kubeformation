@@ -39,6 +39,9 @@ var ErrVersionAlreadyRegistered = errors.New("kubeformation: version is already 
 // ErrInvalidSpecVersion is thrown when spec with an unknown version is provided
 var ErrInvalidSpecVersion = errors.New("kubeformation: invalid spec version")
 
+// ErrInvalidSpec is thrown when the spec is not in a readable format
+var ErrInvalidSpec = errors.New("kubeformation: unknown spec format")
+
 // handlers is a container to hold all the version handlers
 var handlers = make(map[string]VersionedSpecHandler)
 
@@ -52,7 +55,7 @@ func Register(version string, vsh VersionedSpecHandler) error {
 	defer handlerLock.Unlock()
 	if _, found := handlers[version]; found {
 		log.Debugf("version %s already registered", version)
-		return errors.Wrap(ErrVersionAlreadyRegistered, version)
+		return ErrVersionAlreadyRegistered
 	}
 	log.Debugf("spec version %s registered", version)
 	handlers[version] = vsh
@@ -61,17 +64,10 @@ func Register(version string, vsh VersionedSpecHandler) error {
 
 // Read a spec and return the corresponding version handler
 func Read(data []byte) (VersionedSpecHandler, error) {
-	var spec VersionedSpec
-	log.Debug("Reading version key from spec")
-	err := yaml.Unmarshal(data, &spec)
+	version, err := readVersion(data)
 	if err != nil {
 		log.Debug(err)
-		return nil, errors.Wrap(err, "reading spec failed")
-	}
-	version := spec.Version
-	log.Debugf("version: %s", version)
-	if len(version) == 0 {
-		return nil, errors.Wrapf(ErrInvalidSpecVersion, "empty version string")
+		return nil, err
 	}
 	handlerLock.Lock()
 	defer handlerLock.Unlock()
@@ -83,4 +79,20 @@ func Read(data []byte) (VersionedSpecHandler, error) {
 	}
 	log.Debug("version found in handler map")
 	return vh.Read(data)
+}
+
+func readVersion(data []byte) (string, error) {
+	var spec VersionedSpec
+	log.Debug("Reading version key from spec")
+	err := yaml.Unmarshal(data, &spec)
+	if err != nil {
+		log.Debug(err)
+		return "", ErrInvalidSpec
+	}
+	version := spec.Version
+	log.Debugf("version: %s", version)
+	if len(version) == 0 {
+		return "", ErrInvalidSpecVersion
+	}
+	return version, nil
 }

@@ -33,3 +33,17 @@ type Provider interface {
 	// Returns an error if the rendering goes wrong.
 	MarshalFiles() (map[string][]byte, error)
 }
+
+// Parse takes a string p and return the corresponding provider type
+func Parse(p string) ProviderType {
+	switch p {
+	case "gke":
+		return GKE
+	case "aks":
+		return AKS
+	case "eks":
+		return EKS
+	default:
+		return NOP
+	}
+}
