@@ -60,6 +60,8 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 		spec := gke.NewDefaultSpec()
 		spec.Name = s.Name
 		spec.K8SVersion = s.K8SVersion
+
+		// Add Nodes
 		if len(s.Nodes) > 0 {
 			spec.NodePools = []gke.NodePool{}
 		}
@@ -72,6 +74,18 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 				Size:        nodePool.PoolSize,
 			}
 			spec.NodePools = append(spec.NodePools, pool)
+		}
+
+		// Add Volumes
+		if len(s.Volumes) > 0 {
+			spec.Volumes = []gke.Volume{}
+		}
+		for _, volume := range s.Volumes {
+			disk := gke.Volume{
+				Name:   volume.Name,
+				SizeGB: volume.Size,
+			}
+			spec.Volumes = append(spec.Volumes, disk)
 		}
 		return spec.MarshalFiles()
 	case provider.AKS:
