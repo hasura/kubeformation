@@ -47,7 +47,7 @@ func (s *Spec) GetType() provider.ProviderType {
 
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	var adb bytes.Buffer
-	azureDeployJinjaTmpl, err := template.New("azureDeploy.jinja").Parse(azureDeployJinja)
+	azureDeployJinjaTmpl, err := template.New("azureDeploy.json").Parse(azureDeployJinja)
 	if err != nil {
 		return nil, err
 	}

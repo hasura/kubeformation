@@ -16,28 +16,6 @@ var azureDeployJinja = `{
       },
       "type": "string"
     },
-    "orchestratorType": {
-      "metadata": {
-        "description": "The type of orchestrator used to manage the applications on the cluster."
-      },
-      "type": "string",
-      "defaultValue": "Kubernetes",
-      "allowedValues": [
-        "Kubernetes",
-        "DCOS",
-        "Swarm"
-      ]
-    },
-    "masterCount": {
-      "metadata": {
-        "description": "The number of Kubernetes masters for the cluster."
-      },
-      "type": "int",
-      "defaultValue": 1,
-      "allowedValues": [
-        1
-      ]
-    },
     "sshRSAPublicKey": {
       "metadata": {
         "description": "Configure all linux machines with the SSH RSA public key string.  Your key should include three parts, for example 'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'"
@@ -69,9 +47,6 @@ var azureDeployJinja = `{
       "location": "[resourceGroup().location]",
       "name": "{{ .Name }}",
       "properties": {
-        "orchestratorProfile": {
-          "orchestratorType": "[parameters('orchestratorType')]"
-        },
         "dnsPrefix": "[parameters('dnsNamePrefix')]",
         "agentPoolProfiles": [
           {{- range .NodePools }}
@@ -130,9 +105,6 @@ var parametersJSON = `{
     },
     "servicePrincipalClientSecret": {
       "value": "GEN-UNIQUE"
-    },
-    "orchestratorType":{
-      "value": "Kubernetes"
     }
   }
 }`
