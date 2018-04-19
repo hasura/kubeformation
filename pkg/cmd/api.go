@@ -11,58 +11,64 @@ import (
 	"strconv"
 )
 
-func RenderProviderTemplate(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		data, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			log.Printf("Error reading body: %v", err)
-			http.Error(w, "cannot read request body", http.StatusBadRequest)
-			return
-		}
-
-		download, err := strconv.ParseBool(r.URL.Query().Get("download"))
-		if err != nil {
-			log.Printf("Error reading query param as bool: %v", err)
-			http.Error(w, "error reading query param as bool", http.StatusBadRequest)
-			return
-		}
-
-		out, err := runKubeformationAPI(data)
-		if err != nil {
-			log.Printf("Error parsing body and generating template: %v", err)
-			http.Error(w, "error parsing body and generating template", http.StatusInternalServerError)
-			return
-		}
-
-		response, err := json.Marshal(convertByteMapToString(out))
-		if err != nil {
-			log.Printf("Error converting output to JSON: %v", err)
-			http.Error(w, "cannot convert output to JSON", http.StatusInternalServerError)
-			return
-		}
-
-		if download {
-			zipFile, err := createZip(out)
-			fmt.Println(zipFile)
-			zipFileName := filepath.Base(zipFile)
-
+func RenderProviderTemplate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "POST":
+			data, err := ioutil.ReadAll(r.Body)
 			if err != nil {
-				log.Printf("Error converting output to zip: %v", err)
-				http.Error(w, "cannot convert output to zip", http.StatusInternalServerError)
+				log.Printf("Error reading body: %v", err)
+				http.Error(w, "cannot read request body", http.StatusBadRequest)
 				return
 			}
-			w.Header().Set("Content-Disposition", "attachment; filename="+zipFileName+".zip")
-			w.Header().Set("Content-Type", "application/zip")
-			http.ServeFile(w, r, zipFile)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(response)
 
-	default:
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-	}
+			var download bool
+			dlQueryParam := r.URL.Query().Get("download")
+			if len(dlQueryParam) > 0 {
+				download, err = strconv.ParseBool(dlQueryParam)
+				if err != nil {
+					log.Printf("Error reading query param as bool: %v", err)
+					http.Error(w, "error reading query param as bool", http.StatusBadRequest)
+					return
+				}
+			}
+
+			out, err := runKubeformationAPI(data)
+			if err != nil {
+				log.Printf("Error parsing body and generating template: %v", err)
+				http.Error(w, "error parsing body and generating template", http.StatusInternalServerError)
+				return
+			}
+
+			response, err := json.Marshal(convertByteMapToString(out))
+			if err != nil {
+				log.Printf("Error converting output to JSON: %v", err)
+				http.Error(w, "cannot convert output to JSON", http.StatusInternalServerError)
+				return
+			}
+
+			if download {
+				zipFile, err := createZip(out)
+				fmt.Println(zipFile)
+				zipFileName := filepath.Base(zipFile)
+
+				if err != nil {
+					log.Printf("Error converting output to zip: %v", err)
+					http.Error(w, "cannot convert output to zip", http.StatusInternalServerError)
+					return
+				}
+				w.Header().Set("Content-Disposition", "attachment; filename="+zipFileName+".zip")
+				w.Header().Set("Content-Type", "application/zip")
+				http.ServeFile(w, r, zipFile)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(response)
+
+		default:
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
 }
 
 func runKubeformationAPI(data []byte) (map[string][]byte, error) {
@@ -95,7 +101,6 @@ func createZip(data map[string][]byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(f.Name())
 	defer f.Close()
 
 	zipWriter := zip.NewWriter(f)
