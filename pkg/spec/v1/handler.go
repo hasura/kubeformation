@@ -88,7 +88,20 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 		return spec.MarshalFiles()
 	case provider.AKS:
 		spec := aks.NewDefaultSpec()
-		// TODO: add AKS procedure
+		spec.Name = s.Name
+		spec.K8SVersion = s.K8SVersion
+		if len(s.Nodes) > 0 {
+			spec.NodePools = []aks.NodePool{}
+		}
+		for _, nodePool := range s.Nodes {
+			pool := aks.NodePool{
+				Name:   nodePool.Name,
+				VMSize: nodePool.Type,
+				Count:  nodePool.PoolSize,
+				OSType: nodePool.OSImage,
+			}
+			spec.NodePools = append(spec.NodePools, pool)
+		}
 		return spec.MarshalFiles()
 	}
 	return nil, errors.New("unknown provider")
