@@ -67,16 +67,16 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 		spec.K8SVersion = s.K8SVersion
 
 		// Add Nodes
-		if len(s.Nodes) > 0 {
+		if len(s.NodePools) > 0 {
 			spec.NodePools = []gke.NodePool{}
 		}
-		for _, nodePool := range s.Nodes {
+		for _, nodePool := range s.NodePools {
 			pool := gke.NodePool{
 				Name:        nodePool.Name,
 				MachineType: nodePool.Type,
 				ImageType:   nodePool.OSImage,
 				Labels:      nodePool.Labels,
-				Size:        nodePool.PoolSize,
+				Size:        nodePool.Size,
 			}
 			spec.NodePools = append(spec.NodePools, pool)
 		}
@@ -98,14 +98,14 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 		spec.Name = s.Name
 		spec.K8SVersion = s.K8SVersion
 		// Add Nodes
-		if len(s.Nodes) > 0 {
+		if len(s.NodePools) > 0 {
 			spec.NodePools = []aks.NodePool{}
 		}
-		for _, nodePool := range s.Nodes {
+		for _, nodePool := range s.NodePools {
 			pool := aks.NodePool{
 				Name:   nodePool.Name,
 				VMSize: nodePool.Type,
-				Count:  nodePool.PoolSize,
+				Count:  nodePool.Size,
 				OSType: nodePool.OSImage,
 			}
 			spec.NodePools = append(spec.NodePools, pool)

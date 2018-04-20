@@ -15,8 +15,8 @@ type ClusterSpec struct {
 	// will vary from provider to provider
 	K8SVersion string `json:"k8sVersion"`
 
-	// Nodes denotes the node pools for the cluster
-	Nodes []NodePool `json:"nodes"`
+	// NodePools denotes the node pools for the cluster
+	NodePools []NodePool `json:"nodePools"`
 
 	Volumes []Volume `json:"volumes"`
 }
@@ -27,8 +27,8 @@ type NodePool struct {
 	// Name of the node pool
 	Name string `json:"name"`
 
-	// PoolSize is the number of nodes in this node pool
-	PoolSize int64 `json:"poolSize"`
+	// Size is the number of nodes in this node pool
+	Size int64 `json:"size"`
 
 	// Type of the nodes in this pool. Value will be provider specific
 	Type string `json:"type"`
