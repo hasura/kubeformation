@@ -123,10 +123,21 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		return nil, err
 	}
 
-	// FIXME: Create new template for managed disks.
+	var db bytes.Buffer
+	if len(s.Volumes) != 0 {
+		azureDiskTmpl, err := template.New("azureDisk.json").Funcs(funcMap).Parse(azureDisksJSON)
+		if err != nil {
+			return nil, err
+		}
+		err = azureDiskTmpl.Execute(&db, s)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	return map[string][]byte{
 		"azuredeploy.json":            adb.Bytes(),
 		"azuredeploy.parameters.json": pb.Bytes(),
+		"azureDisk.json":              db.Bytes(),
 	}, nil
 }
