@@ -86,9 +86,6 @@ func (k *Kubeformation) WriteFilesToDir() error {
 		return err
 	}
 	for name, data := range k.OutputFiles {
-		if len(data) == 0 {
-			continue
-		}
 		err := ioutil.WriteFile(filepath.Join(k.OutputDir, name), data, 0644)
 		if err != nil {
 			return err

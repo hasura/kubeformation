@@ -103,6 +103,7 @@ func (s *Spec) GetType() provider.ProviderType {
 // filename as keys and file content as value.
 // FIXME: test does not capture the template errors.
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
+	files := map[string][]byte{}
 	var adb bytes.Buffer
 	azureDeployJinjaTmpl, err := template.New("azuredeploy.json").Funcs(funcMap).Parse(azureDeployJSON)
 	if err != nil {
@@ -112,6 +113,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	files["azuredeploy.json"] = adb.Bytes()
 
 	var pb bytes.Buffer
 	parametersJSONTmpl, err := template.New("azuredeploy.parameters.json").Parse(parametersJSON)
@@ -122,6 +124,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	files["azuredeploy.parameters.json"] = pb.Bytes()
 
 	var db bytes.Buffer
 	if len(s.Volumes) != 0 {
@@ -133,6 +136,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+		files["azureDisk.json"] = db.Bytes()
 	}
 
 	var pdb bytes.Buffer
@@ -146,12 +150,8 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+		files["azureDisk.json"] = pdb.Bytes()
 	}
 
-	return map[string][]byte{
-		"azuredeploy.json":            adb.Bytes(),
-		"azuredeploy.parameters.json": pb.Bytes(),
-		"azureDisk.json":              db.Bytes(),
-		"k8s-volumes.yaml":            pdb.Bytes(),
-	}, nil
+	return files, nil
 }

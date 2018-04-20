@@ -106,6 +106,7 @@ func (s *Spec) GetType() provider.ProviderType {
 // filename as keys and the file content as value.
 // FIXME: test does not capture the template errors.
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
+	files := map[string][]byte{}
 	var cjb bytes.Buffer
 	clusterJinjaTmpl, err := template.New("cluster.jinja").Parse(clusterJinja)
 	if err != nil {
@@ -115,6 +116,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	files["cluster.jinja"] = cjb.Bytes()
 
 	var cyb bytes.Buffer
 	clusterYamlTmpl, err := template.New("cluster.yaml").Parse(clusterYaml)
@@ -125,6 +127,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	files["cluster.yaml"] = cyb.Bytes()
 
 	var pdb bytes.Buffer
 	if len(s.Volumes) != 0 {
@@ -137,11 +140,8 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+		files["k8s-volumes.yaml"] = pdb.Bytes()
 	}
 
-	return map[string][]byte{
-		"cluster.jinja":    cjb.Bytes(),
-		"cluster.yaml":     cyb.Bytes(),
-		"k8s-volumes.yaml": pdb.Bytes(),
-	}, nil
+	return files, nil
 }
