@@ -171,7 +171,7 @@ spec:
   azureDisk:
     kind: Managed
     diskName: {{ .Name }}
-    diskURI: /subscriptions/<subscriptionID>/resourceGroups/<groupName>/providers/Microsoft.Compute/disks/{{ .Name }}
+    diskURI: /subscriptions/SUBSCRIPTIONID/resourceGroups/GROUPNAME/providers/Microsoft.Compute/disks/{{ .Name }}
 {{- if ne $i $volumeLength }}
 ---
 {{ end -}}
