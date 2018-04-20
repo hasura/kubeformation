@@ -3,14 +3,6 @@ package gke
 // clusterJinja is a raw Go template string used to render cluster.jinja file
 // for Google Deployment Manager.
 var clusterJinja = `resources:
-{{- range .Volumes }}
-- name: {{ .Name }}
-  type: compute.v1.disk
-  properties:
-    zone: {{"{{"}} properties['zone'] {{"}}"}}
-    sizeGb: {{ .SizeGB }}
-    type: https://www.googleapis.com/compute/v1/projects/{{"{{"}} properties['project'] {{"}}"}}/zones/{{"{{"}} properties['zone'] {{"}}"}}/diskTypes/pd-ssd
-{{- end }}
 - name: {{ .Name }}
   type: container.v1.cluster
   properties:
@@ -45,7 +37,15 @@ var clusterJinja = `resources:
             {{ $key }}: {{ $value }}
           {{- end -}}
           {{- end -}}
-      {{- end -}}`
+      {{- end -}}
+{{- range .Volumes }}
+- name: {{ .Name }}
+  type: compute.v1.disk
+  properties:
+    zone: {{"{{"}} properties['zone'] {{"}}"}}
+    sizeGb: {{ .SizeGB }}
+    type: https://www.googleapis.com/compute/v1/projects/{{"{{"}} properties['project'] {{"}}"}}/zones/{{"{{"}} properties['zone'] {{"}}"}}/diskTypes/pd-ssd
+{{- end -}}`
 
 // clusterYaml is the raw Go template string used to render cluster.yaml file
 var clusterYaml = `imports:
@@ -55,6 +55,6 @@ resources:
 - name:  {{ .Name }}
   type: cluster.jinja
   properties:
-    zone: ZONE
     name: {{ .Name }}
-    project: PROJECT`
+    project: PROJECT
+    zone: ZONE`

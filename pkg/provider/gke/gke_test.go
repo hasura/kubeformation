@@ -53,8 +53,9 @@ resources:
 - name:  gke-cluster
   type: cluster.jinja
   properties:
-    zone: ZONE
-    name: gke-cluster`),
+    name: gke-cluster
+    project: PROJECT
+    zone: ZONE`),
 			},
 			nil,
 		},
@@ -67,6 +68,14 @@ resources:
 				t.Fatalf("expected error '%v', got '%v'", tc.err, err)
 			}
 			if !reflect.DeepEqual(files, tc.data) {
+				t.Log("expected:")
+				for k, v := range tc.data {
+					t.Logf("%s:\n%s\n", k, string(v))
+				}
+				t.Log("got:")
+				for k, v := range tc.data {
+					t.Logf("%s:\n%s\n", k, string(v))
+				}
 				t.Fatal("data mismatch")
 			}
 		})

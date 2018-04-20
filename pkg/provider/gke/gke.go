@@ -38,6 +38,7 @@ type Spec struct {
 	// Node pools for the cluster
 	NodePools []NodePool
 
+	// Persistent disks to be created
 	Volumes []Volume
 }
 
@@ -60,8 +61,12 @@ type NodePool struct {
 	ImageType string
 }
 
+// Volume defines a Google Persistent Disk to be created along with the cluster.
 type Volume struct {
-	Name   string
+	// Name of the disk
+	Name string
+
+	// Size of the disk to be created, in GB
 	SizeGB int
 }
 
