@@ -19,14 +19,11 @@ func TestReadVersion(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			version, err := readVersion(tc.data)
-			if err != nil {
-				if err != tc.err {
-					t.Fatalf("reading '%s', expected error '%v', got '%v'", string(tc.data), tc.err, err)
-				}
-			} else {
-				if version != tc.version {
-					t.Fatalf("reading %s, expected version %s, got %s", string(tc.data), tc.version, version)
-				}
+			if err != tc.err {
+				t.Fatalf("reading '%s', expected error '%v', got '%v'", string(tc.data), tc.err, err)
+			}
+			if version != tc.version {
+				t.Fatalf("reading %s, expected version %s, got %s", string(tc.data), tc.version, version)
 			}
 		})
 	}
