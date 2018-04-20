@@ -150,7 +150,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		files["azureDisk.json"] = pdb.Bytes()
+		files["k8s-volumes.yaml"] = pdb.Bytes()
 	}
 
 	return files, nil
