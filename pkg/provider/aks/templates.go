@@ -49,7 +49,8 @@ var azureDeployJinja = `{
       "properties": {
         "dnsPrefix": "[parameters('dnsNamePrefix')]",
         "agentPoolProfiles": [
-          {{- range .NodePools }}
+          {{- $nodeLength := sub (len .NodePools) }}
+          {{- range $i, $node := .NodePools }}
           {
             "name": "{{ .Name }}",
             "count": {{ .Count }},
@@ -64,7 +65,11 @@ var azureDeployJinja = `{
             {{- else }}
             "osType": "Linux"
             {{- end }}
+          {{- if ne $i $nodeLength }}
+          },
+          {{- else }}
           }
+          {{- end }}
           {{- end }}
         ],
         "kubernetesVersion": "{{ .K8SVersion }}",
@@ -83,7 +88,30 @@ var azureDeployJinja = `{
           "secret": "[parameters('servicePrincipalClientSecret')]"
         }
       }
+    {{- if not .Volumes}}
     }
+    {{- else}}
+    },
+    {{- end }}
+    {{- $volumeLength := sub (len .Volumes) }}
+    {{- range $i, $volume := .Volumes }}
+    {
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/disks",
+      "location": "[resourceGroup().location]",
+      "name": "{{ .Name }}",
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
+        },
+        "diskSizeGB": {{ .SizeGB }}
+      }
+    {{- if ne $i $volumeLength }}
+    },
+    {{- else }}
+    }
+    {{- end }}
+    {{- end }}
   ]
 }`
 

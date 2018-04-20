@@ -25,7 +25,7 @@ func init() {
 	s := ClusterSpec{Version: version}
 	err := spec.Register(version, &s)
 	if err != nil {
-		log.WithError(err).Errorf("registering %s version handler failed")
+		log.WithError(err).Errorf("registering %s version handler failed", version)
 	}
 }
 
@@ -65,6 +65,8 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 		spec := gke.NewDefaultSpec()
 		spec.Name = s.Name
 		spec.K8SVersion = s.K8SVersion
+
+		// Add Nodes
 		if len(s.Nodes) > 0 {
 			spec.NodePools = []gke.NodePool{}
 		}
@@ -78,11 +80,24 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 			}
 			spec.NodePools = append(spec.NodePools, pool)
 		}
+
+		// Add Volumes
+		if len(s.Volumes) > 0 {
+			spec.Volumes = []gke.Volume{}
+		}
+		for _, volume := range s.Volumes {
+			disk := gke.Volume{
+				Name:   volume.Name,
+				SizeGB: volume.Size,
+			}
+			spec.Volumes = append(spec.Volumes, disk)
+		}
 		return spec.MarshalFiles()
 	case provider.AKS:
 		spec := aks.NewDefaultSpec()
 		spec.Name = s.Name
 		spec.K8SVersion = s.K8SVersion
+		// Add Nodes
 		if len(s.Nodes) > 0 {
 			spec.NodePools = []aks.NodePool{}
 		}
@@ -94,6 +109,17 @@ func (s *ClusterSpec) GenerateProviderTemplate(providerType provider.ProviderTyp
 				OSType: nodePool.OSImage,
 			}
 			spec.NodePools = append(spec.NodePools, pool)
+		}
+		// Add Volumes
+		if len(s.Volumes) > 0 {
+			spec.Volumes = []aks.Volume{}
+		}
+		for _, volume := range s.Volumes {
+			disk := aks.Volume{
+				Name:   volume.Name,
+				SizeGB: volume.Size,
+			}
+			spec.Volumes = append(spec.Volumes, disk)
 		}
 		return spec.MarshalFiles()
 	}

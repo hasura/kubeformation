@@ -37,6 +37,8 @@ type Spec struct {
 
 	// Node pools for the cluster
 	NodePools []NodePool
+
+	Volumes []Volume
 }
 
 // NodePool defines a collection of nodes with similar properties in a
@@ -56,6 +58,11 @@ type NodePool struct {
 
 	// Image type to use for the nodes
 	ImageType string
+}
+
+type Volume struct {
+	Name   string
+	SizeGB int
 }
 
 // NewDefaultSpec returns a spec object which is complete enough to render a
