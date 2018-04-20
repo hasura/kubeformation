@@ -18,10 +18,12 @@ type ClusterSpec struct {
 	// NodePools denotes the node pools for the cluster
 	NodePools []NodePool `json:"nodePools"`
 
+	// Volumes are the persistent volumes to be used in this cluster.
+	// Corresponding disk and k8s persistent volume object will be created.
 	Volumes []Volume `json:"volumes"`
 }
 
-// NodePool indicated the spec for a Kubernetes node pools.
+// NodePools indicate the spec for a Kubernetes node pools.
 // A NodePool is just a collection of nodes having the same configuration
 type NodePool struct {
 	// Name of the node pool
@@ -40,7 +42,12 @@ type NodePool struct {
 	Labels map[string]string `json:"labels"`
 }
 
+// Volume denotes a volume to be used in the cluster. A backing disk and a k8s
+// PV object will be created for each volume.
 type Volume struct {
+	// Name of the volume
 	Name string `json:"name"`
-	Size int    `json:"size"`
+
+	// Size of the volume in GB
+	Size int `json:"size"`
 }
