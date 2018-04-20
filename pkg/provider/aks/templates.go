@@ -127,6 +127,8 @@ var parametersJSON = `{
   }
 }`
 
+// azureDisksJSON is a raw Go template for writing azureDisk.json file which
+// contains any disk related info.
 var azureDisksJSON = `{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
