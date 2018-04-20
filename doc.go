@@ -7,23 +7,28 @@
 //
 // The cluster spec defines a Kubernetes cluster in a minimalistic way. It takes
 // some parameters for the master, like name and k8s version, and a list of node
-// pools along with their properties.
+// pools along with their properties. It can also take volumes for which it
+// generates persistent disk in the template and Kubernetes Persistent Volume
+// object as YAML file.
 //
 // A sample cluster spec is as follows:
 //   version: v1
 //   name: cluster-name
 //   provider: gke
 //   k8sVersion: "1.9"
-//   nodes:
+//   nodePools:
 //   - name: db-pool
 //     type: n1-standard-1
 //     labels:
 //       app: postgres
 //   - name: backend-pool
 //     type: n1-standard-2
-//     poolSize: 2
+//     size: 2
 //     labels:
 //       app: backend
+//   volumes:
+//   - name: postgres
+//     size: 10
 // A detailed definition can found at https://godoc.org/github.com/hasura/kubeformation/pkg/spec/v1/#ClusterSpec.
 //
 // The following managed Kubernetes providers are supported:
