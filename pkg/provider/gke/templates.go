@@ -58,3 +58,23 @@ resources:
     name: {{ .Name }}
     project: PROJECT
     zone: ZONE`
+
+// persistentVolumeJinja is a raw Go template for writing volumes.yaml file which
+// contains any PersistentVolume related info.
+var persistentVolumeJinja = `{{- $volumeLength := sub (len .Volumes) }}
+{{- range $i, $volume := .Volumes -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Name }}
+spec:
+  capacity:
+    storage: {{ .SizeGB }}G
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: {{ .Name }}
+{{- if ne $i $volumeLength }}
+---
+{{ end -}}
+{{- end -}}`

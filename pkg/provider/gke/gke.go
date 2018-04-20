@@ -27,6 +27,16 @@ const (
 	DefaultImageType = "cos"
 )
 
+// funcMap is a template helper function
+var funcMap = template.FuncMap{
+	"sub": func(i int) int {
+		if i == 0 {
+			return 0
+		}
+		return i - 1
+	},
+}
+
 // Spec defines the context required to render GDM template.
 type Spec struct {
 	// Name of the cluster
@@ -116,8 +126,22 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		return nil, err
 	}
 
+	var pdb bytes.Buffer
+	if len(s.Volumes) != 0 {
+		volumesTmpl, err := template.New("volumes.yaml").Funcs(funcMap).Parse(persistentVolumeJinja)
+		if err != nil {
+			return nil, err
+		}
+
+		err = volumesTmpl.Execute(&pdb, s)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return map[string][]byte{
 		"cluster.jinja": cjb.Bytes(),
 		"cluster.yaml":  cyb.Bytes(),
+		"volumes.yaml":  pdb.Bytes(),
 	}, nil
 }

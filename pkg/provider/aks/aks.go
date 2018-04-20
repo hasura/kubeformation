@@ -135,9 +135,23 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		}
 	}
 
+	var pdb bytes.Buffer
+	if len(s.Volumes) != 0 {
+		volumesTmpl, err := template.New("volumes.yaml").Funcs(funcMap).Parse(persistentVolumeJinja)
+		if err != nil {
+			return nil, err
+		}
+
+		err = volumesTmpl.Execute(&pdb, s)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return map[string][]byte{
 		"azuredeploy.json":            adb.Bytes(),
 		"azuredeploy.parameters.json": pb.Bytes(),
 		"azureDisk.json":              db.Bytes(),
+		"volumes.yaml":                pdb.Bytes(),
 	}, nil
 }
