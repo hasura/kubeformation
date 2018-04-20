@@ -83,9 +83,21 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	}
 
 	//FIXME: Create new template for managed disks.
+	var diskBytes bytes.Buffer
+	if len(s.Volumes) != 0 {
+		azureDiskTmpl, err := template.New("azureDisk.json").Funcs(funcMap).Parse(azureDisksJinja)
+		if err != nil {
+			return nil, err
+		}
+		err = azureDiskTmpl.Execute(&diskBytes, s)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	return map[string][]byte{
 		"azuredeploy.json":            adb.Bytes(),
 		"azuredeploy.parameters.json": pb.Bytes(),
+		"azureDisk.json":              diskBytes.Bytes(),
 	}, nil
 }

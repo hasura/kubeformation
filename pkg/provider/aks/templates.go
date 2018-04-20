@@ -88,31 +88,18 @@ var azureDeployJinja = `{
           "secret": "[parameters('servicePrincipalClientSecret')]"
         }
       }
-    {{- if not .Volumes}}
     }
-    {{- else}}
-    },
-    {{- end }}
-    {{- $volumeLength := sub (len .Volumes) }}
-    {{- range $i, $volume := .Volumes }}
-    {
-      "apiVersion": "2017-03-30",
-      "type": "Microsoft.Compute/disks",
-      "location": "[resourceGroup().location]",
-      "name": "{{ .Name }}",
-      "properties": {
-        "creationData": {
-          "createOption": "Empty"
-        },
-        "diskSizeGB": {{ .SizeGB }}
-      }
-    {{- if ne $i $volumeLength }}
-    },
-    {{- else }}
-    }
-    {{- end }}
-    {{- end }}
+  {{- if not .Volumes }}
   ]
+  {{- else }}
+  ],
+  "outputs": {
+    "azure_disk_command": {
+      "type": "string",
+      "value": "[concat('Run az group deployment create -n ', '{{ .Name }}-disks ', '-g ', toUpper(concat('MC_', resourceGroup().name, '_', '{{ .Name }}', '_', resourceGroup().location, ' ')), '--template-file azureDisk.json')]"
+    }
+  }
+  {{- end }}
 }`
 
 var parametersJSON = `{
@@ -135,4 +122,30 @@ var parametersJSON = `{
       "value": "GEN-UNIQUE"
     }
   }
+}`
+
+var azureDisksJinja = `{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {{- $volumeLength := sub (len .Volumes) }}
+    {{- range $i, $volume := .Volumes }}
+    {
+      "apiVersion": "2017-03-30",
+      "type": "Microsoft.Compute/disks",
+      "location": "[resourceGroup().location]",
+      "name": "{{ .Name }}",
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
+        },
+        "diskSizeGB": {{ .SizeGB }}
+      }
+    {{- if ne $i $volumeLength }}
+    },
+    {{- else }}
+    }
+    {{- end }}
+    {{- end }}
+  ]
 }`
