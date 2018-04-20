@@ -128,7 +128,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 
 	var pdb bytes.Buffer
 	if len(s.Volumes) != 0 {
-		volumesTmpl, err := template.New("volumes.yaml").Funcs(funcMap).Parse(persistentVolumeJinja)
+		volumesTmpl, err := template.New("k8s-volumes.yaml").Funcs(funcMap).Parse(persistentVolumeYaml)
 		if err != nil {
 			return nil, err
 		}
@@ -140,8 +140,8 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	}
 
 	return map[string][]byte{
-		"cluster.jinja": cjb.Bytes(),
-		"cluster.yaml":  cyb.Bytes(),
-		"volumes.yaml":  pdb.Bytes(),
+		"cluster.jinja":    cjb.Bytes(),
+		"cluster.yaml":     cyb.Bytes(),
+		"k8s-volumes.yaml": pdb.Bytes(),
 	}, nil
 }
