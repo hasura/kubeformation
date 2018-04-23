@@ -5,6 +5,10 @@ API_IMAGE_NAME ?= "kubeformation-api"
 VERSION := $(shell build/get-version.sh)
 PWD := $(shell pwd)
 
+# install dependencies
+deps:
+	$(shell curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh)
+
 # build api server locally
 build-api-local:
 	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo \
