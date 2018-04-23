@@ -27,6 +27,16 @@ const (
 	DefaultImageType = "cos"
 )
 
+// funcMap is a template helper function
+var funcMap = template.FuncMap{
+	"sub": func(i int) int {
+		if i == 0 {
+			return 0
+		}
+		return i - 1
+	},
+}
+
 // Spec defines the context required to render GDM template.
 type Spec struct {
 	// Name of the cluster
@@ -96,6 +106,7 @@ func (s *Spec) GetType() provider.ProviderType {
 // filename as keys and the file content as value.
 // FIXME: test does not capture the template errors.
 func (s *Spec) MarshalFiles() (map[string][]byte, error) {
+	files := map[string][]byte{}
 	var cjb bytes.Buffer
 	clusterJinjaTmpl, err := template.New("cluster.jinja").Parse(clusterJinja)
 	if err != nil {
@@ -105,6 +116,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	files["cluster.jinja"] = cjb.Bytes()
 
 	var cyb bytes.Buffer
 	clusterYamlTmpl, err := template.New("cluster.yaml").Parse(clusterYaml)
@@ -115,9 +127,21 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	files["cluster.yaml"] = cyb.Bytes()
 
-	return map[string][]byte{
-		"cluster.jinja": cjb.Bytes(),
-		"cluster.yaml":  cyb.Bytes(),
-	}, nil
+	var pdb bytes.Buffer
+	if len(s.Volumes) != 0 {
+		volumesTmpl, err := template.New("k8s-volumes.yaml").Funcs(funcMap).Parse(persistentVolumeYaml)
+		if err != nil {
+			return nil, err
+		}
+
+		err = volumesTmpl.Execute(&pdb, s)
+		if err != nil {
+			return nil, err
+		}
+		files["k8s-volumes.yaml"] = pdb.Bytes()
+	}
+
+	return files, nil
 }

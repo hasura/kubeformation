@@ -154,3 +154,25 @@ var azureDisksJSON = `{
     {{- end }}
   ]
 }`
+
+// persistentVolumeYaml is a raw Go template for writing volumes.yaml file which
+// contains any PersistentVolume related info.
+var persistentVolumeYaml = `{{- $volumeLength := sub (len .Volumes) }}
+{{- range $i, $volume := .Volumes -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Name }}
+spec:
+  capacity:
+    storage: {{ .SizeGB }}G
+  accessModes:
+    - ReadWriteOnce
+  azureDisk:
+    kind: Managed
+    diskName: {{ .Name }}
+    diskURI: /subscriptions/SUBSCRIPTIONID/resourceGroups/GROUPNAME/providers/Microsoft.Compute/disks/{{ .Name }}
+{{- if ne $i $volumeLength }}
+---
+{{ end -}}
+{{- end -}}`
