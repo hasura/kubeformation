@@ -25,7 +25,7 @@ push-api:
 api: build-api push-api
 
 # build cli locally, for all given platform/arch
-build-cmd:
+build-cli:
 	go get github.com/mitchellh/gox
 	gox -ldflags "-X github.com/hasura/kubeformation/pkg/cmd.version=$(VERSION)" \
 	-os="linux darwin windows" \
@@ -34,13 +34,21 @@ build-cmd:
 	./cmd/cli/
 
 # build cli inside a docker container
-build-cmd-in-docker:
-	docker build -t kubeformation-cmd-builder -f build/cmd-builder.dockerfile build
+build-cli-in-docker:
+	docker build -t kubeformation-cli-builder -f build/cli-builder.dockerfile build
 	docker run --rm -it \
 	-v $(PWD):/go/src/github.com/hasura/kubeformation \
-	kubeformation-cmd-builder \
-	dep ensure && make build-cmd
+	kubeformation-cli-builder \
+	dep ensure && make build-cli
 
 # run tests
 test:
-	go test -v github.com/hasura/kubeformation/...
+	go test -v ./...
+
+# run tests in docker
+test-in-docker:
+	docker build -t kubeformation-cli-builder -f build/cli-builder.dockerfile build
+	docker run --rm -it \
+	-v $(PWD):/go/src/github.com/hasura/kubeformation \
+	kubeformation-cli-builder \
+	dep ensure && go test -v ./...
