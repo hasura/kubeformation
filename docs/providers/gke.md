@@ -45,8 +45,7 @@ volumes:
 
 ## Step 1 - Generate GCDM template
 
-Generate and download the template from
-[kubeformation.sh](https://kubeformation.sh)
+Download the template from [kubeformation.sh](https://kubeformation.sh)
 
 **or**
 
@@ -92,6 +91,12 @@ $ gcloud deployment-manager deployments create my-cluster --config gke-cluster.y
 ```
 
 That's it! The GKE cluster will be created.
+
+Get `kubectl` context to connect to the cluster:
+
+```bash
+$ gcloud container clusters get-credentials my-cluster --zone <zone> --project <project>
+```
 
 ## Step 4 - Create K8s Persistent Volumes
 

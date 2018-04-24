@@ -102,11 +102,30 @@ These parameters should be added to `aks-params.json` file, by replacing the pla
   Naming convention for this resource group is
   `MC_<original-resource-group-name>_<aks-cluster-name>_<location>`.
 
+Get `kubectl` context to connect to the cluster:
+
+```bash
+$ az aks get-credentials -g my-resource-group -n my-cluster
+```
+
 ## Step 4 - Create K8s Persistent Volumes
 
 If the cluster spec also contains volumes, along with underlying disks, the
 Kubernetes PV & PVC objects also have to be created, so that the disks can be
-used by other k8s deployments etc.
+used by other k8s deployments etc. 
+
+Edit `k8s-volumes.yaml` and replace the placeholders for:
+- `SUBSCRIPTION-ID` - Get the `SubscriptionId` from the output of:
+   ```bash
+   $ az account list --output table
+   ```
+- `RESOURCE-GROUP-NAME` - Get the resource group name azure created (in this
+  case `MC_my-resource-group_my-cluster_westeurope`)
+  ```bash
+  $ az group list --output table
+  ```
+
+Create the k8s resources:
 
 ```bash
 $ kubectl create -f k8s-volumes.yaml
@@ -120,7 +139,7 @@ Delete the resource group to tear down the cluster and disks:
 $ az group delete -n my-resource-group
 ```
 
-We need to delete the resource group Azure created automatically to completely
+We also need to delete the resource group Azure created automatically to completely
 tear down all the resources:
 
 ```bash
