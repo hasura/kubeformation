@@ -107,19 +107,19 @@ func TestMarshalFiles(t *testing.T) {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "dnsNamePrefix": {
-      "value": "GEN-UNIQUE"
+      "value": "aks-cluster"
     },
     "adminUsername": {
-      "value": "GEN-UNIQUE"
+      "value": "aks-cluster"
     },
     "sshRSAPublicKey": {
-      "value": "GEN-SSH-PUB-KEY"
+      "value": "SSH-PUBLIC-KEY"
     },
     "servicePrincipalClientId": {
-      "value": "GEN-UNIQUE"
+      "value": "SERVICE-PRINCIPAL-CLIENT-ID"
     },
     "servicePrincipalClientSecret": {
-      "value": "GEN-UNIQUE"
+      "value": "SERVICE-PRINCIPAL-CLIENT-SECRET"
     }
   }
 }`),

@@ -110,19 +110,19 @@ var parametersJSON = `{
   "contentVersion": "1.0.0.0",
   "parameters": {
     "dnsNamePrefix": {
-      "value": "GEN-UNIQUE"
+      "value": "{{ .Name }}"
     },
     "adminUsername": {
-      "value": "GEN-UNIQUE"
+      "value": "{{ .Name }}"
     },
     "sshRSAPublicKey": {
-      "value": "GEN-SSH-PUB-KEY"
+      "value": "SSH-PUBLIC-KEY"
     },
     "servicePrincipalClientId": {
-      "value": "GEN-UNIQUE"
+      "value": "SERVICE-PRINCIPAL-CLIENT-ID"
     },
     "servicePrincipalClientSecret": {
-      "value": "GEN-UNIQUE"
+      "value": "SERVICE-PRINCIPAL-CLIENT-SECRET"
     }
   }
 }`
@@ -172,7 +172,7 @@ spec:
   azureDisk:
     kind: Managed
     diskName: {{ .Name }}
-    diskURI: /subscriptions/SUBSCRIPTION-ID/resourceGroups/GROUP-NAME/providers/Microsoft.Compute/disks/{{ .Name }}
+    diskURI: /subscriptions/SUBSCRIPTION-ID/resourceGroups/RESOURCE-GROUP-NAME/providers/Microsoft.Compute/disks/{{ .Name }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
