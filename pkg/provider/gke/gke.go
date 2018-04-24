@@ -116,7 +116,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	files["cluster.jinja"] = cjb.Bytes()
+	files["gke-cluster.jinja"] = cjb.Bytes()
 
 	var cyb bytes.Buffer
 	clusterYamlTmpl, err := template.New("cluster.yaml").Parse(clusterYaml)
@@ -127,7 +127,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	files["cluster.yaml"] = cyb.Bytes()
+	files["gke-cluster.yaml"] = cyb.Bytes()
 
 	var pdb bytes.Buffer
 	if len(s.Volumes) != 0 {
