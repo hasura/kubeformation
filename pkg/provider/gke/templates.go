@@ -69,11 +69,24 @@ metadata:
   name: {{ .Name }}
 spec:
   capacity:
-    storage: {{ .SizeGB }}G
+    storage: {{ .SizeGB }}Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: standard
   gcePersistentDisk:
     pdName: {{ .Name }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Name }}-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .SizeGB }}Gi
+  volumeName: {{ .Name }}
 {{- if ne $i $volumeLength }}
 ---
 {{ end -}}
