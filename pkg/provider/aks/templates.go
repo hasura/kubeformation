@@ -165,13 +165,26 @@ metadata:
   name: {{ .Name }}
 spec:
   capacity:
-    storage: {{ .SizeGB }}G
+    storage: {{ .SizeGB }}Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: standard
   azureDisk:
     kind: Managed
     diskName: {{ .Name }}
     diskURI: /subscriptions/SUBSCRIPTIONID/resourceGroups/GROUPNAME/providers/Microsoft.Compute/disks/{{ .Name }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Name }}-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .SizeGB }}Gi
+  volumeName: {{ .Name }}
 {{- if ne $i $volumeLength }}
 ---
 {{ end -}}
