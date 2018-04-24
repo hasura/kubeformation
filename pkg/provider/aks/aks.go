@@ -113,7 +113,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	files["azuredeploy.json"] = adb.Bytes()
+	files["aks-deploy.json"] = adb.Bytes()
 
 	var pb bytes.Buffer
 	parametersJSONTmpl, err := template.New("azuredeploy.parameters.json").Parse(parametersJSON)
@@ -124,7 +124,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	files["azuredeploy.parameters.json"] = pb.Bytes()
+	files["aks-params.json"] = pb.Bytes()
 
 	var db bytes.Buffer
 	if len(s.Volumes) != 0 {
@@ -136,7 +136,7 @@ func (s *Spec) MarshalFiles() (map[string][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		files["azureDisk.json"] = db.Bytes()
+		files["aks-disks.json"] = db.Bytes()
 	}
 
 	var pdb bytes.Buffer

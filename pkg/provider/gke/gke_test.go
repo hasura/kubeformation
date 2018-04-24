@@ -26,7 +26,7 @@ func TestMarshalFiles(t *testing.T) {
 			NewDefaultSpec(),
 			"valid default spec",
 			map[string][]byte{
-				"cluster.jinja": []byte(`resources:
+				"gke-cluster.jinja": []byte(`resources:
 - name: gke-cluster
   type: container.v1.cluster
   properties:
@@ -46,8 +46,8 @@ func TestMarshalFiles(t *testing.T) {
           - https://www.googleapis.com/auth/monitoring
           machineType: n1-standard-1
           imageType: cos`),
-				"cluster.yaml": []byte(`imports:
-- path: cluster.jinja
+				"gke-cluster.yaml": []byte(`imports:
+- path: gke-cluster.jinja
 
 resources:
 - name:  gke-cluster

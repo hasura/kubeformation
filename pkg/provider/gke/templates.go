@@ -49,7 +49,7 @@ var clusterJinja = `resources:
 
 // clusterYaml is the raw Go template string used to render cluster.yaml file
 var clusterYaml = `imports:
-- path: cluster.jinja
+- path: gke-cluster.jinja
 
 resources:
 - name:  {{ .Name }}

@@ -54,7 +54,7 @@ var azureDeployJSON = `{
           {{- $nodeLength := sub (len .NodePools) }}
           {{- range $i, $node := .NodePools }}
           {
-            "name": "{{ $.Name }}-{{ .Name }}",
+            "name": "{{ .Name }}",
             "count": {{ .Count }},
             "dnsPrefix": "[variables('agentsEndpointDNSNamePrefix')]",
             {{- if .VMSize }}
@@ -98,7 +98,7 @@ var azureDeployJSON = `{
   "outputs": {
     "azure_disk_command": {
       "type": "string",
-      "value": "[concat('Run az group deployment create -n ', '{{ .Name }}-disks ', '-g ', toUpper(concat('MC_', resourceGroup().name, '_', '{{ .Name }}', '_', resourceGroup().location, ' ')), '--template-file azureDisk.json')]"
+      "value": "[concat('Run az group deployment create -n ', '{{ .Name }}-disks ', '-g ', toUpper(concat('MC_', resourceGroup().name, '_', '{{ .Name }}', '_', resourceGroup().location, ' ')), '--template-file aks-disks.json')]"
     }
   }
   {{- end }}
@@ -172,7 +172,7 @@ spec:
   azureDisk:
     kind: Managed
     diskName: {{ .Name }}
-    diskURI: /subscriptions/SUBSCRIPTIONID/resourceGroups/GROUPNAME/providers/Microsoft.Compute/disks/{{ .Name }}
+    diskURI: /subscriptions/SUBSCRIPTION-ID/resourceGroups/GROUP-NAME/providers/Microsoft.Compute/disks/{{ .Name }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

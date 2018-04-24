@@ -26,7 +26,7 @@ func TestMarshalFiles(t *testing.T) {
 			NewDefaultSpec(),
 			"valid default spec",
 			map[string][]byte{
-				"azuredeploy.json": []byte(`{
+				"aks-deploy.json": []byte(`{
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -76,7 +76,7 @@ func TestMarshalFiles(t *testing.T) {
         "dnsPrefix": "[parameters('dnsNamePrefix')]",
         "agentPoolProfiles": [
           {
-            "name": "aks-cluster-np-1",
+            "name": "np-1",
             "count": 1,
             "dnsPrefix": "[variables('agentsEndpointDNSNamePrefix')]",
             "vmSize": "Standard_D2_v2",
@@ -102,7 +102,7 @@ func TestMarshalFiles(t *testing.T) {
     }
   ]
 }`),
-				"azuredeploy.parameters.json": []byte(`{
+				"aks-params.json": []byte(`{
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
