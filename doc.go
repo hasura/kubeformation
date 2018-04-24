@@ -8,7 +8,7 @@
 // The cluster spec defines a Kubernetes cluster in a minimalistic way. It takes
 // some parameters for the master, like name and k8s version, and a list of node
 // pools along with their properties. It can also take volumes for which it
-// generates persistent disk in the template and Kubernetes Persistent Volume
+// generates persistent disk in the template and Kubernetes Persistent Volume/Claim
 // object as YAML file.
 //
 // A sample cluster spec is as follows:
@@ -46,7 +46,4 @@
 // Template. ARM templates consists of two JSON files, one file defines the
 // deployment while other defines the parameters that can be used with the deployment.
 //
-// Elastic Kubernetes Service - EKS
-//
-// Amazon's EKS support is a work in progress
 package kubeformation
