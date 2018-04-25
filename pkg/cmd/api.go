@@ -3,13 +3,13 @@ package cmd
 import (
 	"archive/zip"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"path/filepath"
 	"strconv"
 
+	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 )
 
@@ -56,6 +56,13 @@ func RenderProviderTemplate(l *log.Logger) http.Handler {
 				return
 			}
 
+			clusterYaml, err := yaml.JSONToYAML(data)
+			if err != nil {
+				logger(err, "error converting POST data to YAML", http.StatusInternalServerError)
+				return
+			}
+			out["cluster.yaml"] = clusterYaml
+
 			response, err := json.Marshal(convertByteMapToString(out))
 			if err != nil {
 				logger(err, "cannot convert output to JSON", http.StatusInternalServerError)
@@ -64,7 +71,6 @@ func RenderProviderTemplate(l *log.Logger) http.Handler {
 
 			if download {
 				zipFile, err := createZip(out)
-				fmt.Println(zipFile)
 				zipFileName := filepath.Base(zipFile)
 
 				if err != nil {
