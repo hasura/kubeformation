@@ -23,7 +23,7 @@ The provider string is `gke`.
 ## Step 0 - Write `cluster.yaml`
 
 PS: This step can be skipped if [kubeformation.sh](https://kubeformation.sh) is
-used. Jump right ahead to [Step 1](#step-1-generate-gcdm-template).
+used. Jump right ahead to [Step 1](#step-1---generate-gcdm-template).
 
 Here's an example `cluster.yaml`:
 

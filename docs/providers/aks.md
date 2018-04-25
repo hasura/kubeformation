@@ -17,7 +17,7 @@ The provider string is `aks`.
 ## Step 0 - Write `cluster.yaml`
 
 PS: This step can be skipped if [kubeformation.sh](https://kubeformation.sh) is
-used. Jump right ahead to [Step 1](#step-1-generate-arm-template).
+used. Jump right ahead to [Step 1](#step-1---generate-arm-template).
 
 Here's an example `cluster.yaml`:
 
@@ -38,7 +38,7 @@ volumes:
 ```
 
 Note:
-- nodePool name should only contain `[a-z0-9]` and start with and must start with a
+- nodePool name should only contain `[a-z0-9]` and must start with a
   lowercase letter
 
 ## Step 1 - Generate ARM template

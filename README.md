@@ -6,23 +6,34 @@ Create declarative specifications for your managed Kubernetes cloud vendor (GKE,
 
 ## Motivation
 
-With Kubernetes, it becomes possible to start making everything about your application declarative. As cloud vendors start providing managed Kubernetes services, provisioning a Kubernetes cluster via the vendor’s API becomes declarative as well.
+With Kubernetes, it becomes possible to start making everything about your
+application declarative. As cloud vendors start providing managed Kubernetes
+services, provisioning a Kubernetes cluster via the vendor’s API becomes
+declarative as well.
 
-Kubeformation is a simple web UI and CLI that helps you create “Google Deployment manager” or “Azure Resoure Manager” templates which are a _little_ painful to create by hand.
+Kubeformation is a simple web UI and CLI that helps you create “Google
+Deployment manager” or “Azure Resoure Manager” templates which are a _little_
+painful to create by hand.
 
-Once you have this file, you can run your cloud vendor CLI on it to provision your cluster. You can edit this file to add vendor specific configuration too.
+Once you have this file, you can run your cloud vendor CLI on it to provision
+your cluster. You can edit this file to add vendor specific configuration too.
 
 ## Usage
 
-Head to https://kubeformation.sh, build a cluster, download the templates
+- Head to https://kubeformation.sh
+- Build a cluster spec.
+- Download the template.
+- Follow provider specific instructions to create the cluster. [[docs]](docs/providers/providers.md)
 
 **or** 
 
-Write cluster.yaml yourself, use the `kubeformation` CLI
+- Write cluster spec yourself. [[docs]](docs/spec/v1.md)
+- Use the `kubeformation` CLI to generate template. [[docs]](docs/cli/kubeformation.md)
+- Follow provider specific instructions to create the cluster. [[docs]](docs/providers/providers.md)
 
 ## Example
 
-Let's look at a spec that defines a Kubernetes cluster: `cluster.yaml`
+Here's a spec that defines a Kubernetes cluster: `cluster.yaml`
 
 ```yaml
 version: v1
@@ -50,10 +61,39 @@ Manager](https://cloud.google.com/deployment-manager/) template, which can then
 be used with `gcloud` command to create the GKE cluster. This is a declarative
 template that can be used to further do create or modify the cluster.
 
-`kubeformation` is exclusively meant for managed Kubernetes providers. The
-following providers are supported:
+```bash
+$ kubeformation -f cluster.yaml -o templates
+```
+
+Then, use `gcloud` CLI to create the deployment. [[docs]](docs/providers/gke.md)
+
+```bash
+$ gcloud deployment-manager deployments create my-cluster --config templates/gke-cluster.yaml
+```
+
+**NOTE**: `kubeformation` is exclusively meant for managed Kubernetes providers. The
+following providers are currently supported:
 
 1. Google Kubernetes Engine (GKE)
 2. Azure Container Service (AKS)
 
+## Installation
+
+Download CLI for your platform from the [releases
+page](https://github.com/hasura/kubeformation/releases), add it to `PATH` and give
+execute permissions.
+
+```bash
+$ chmod +x kubeformation
+```
+
+## Docs
+
 Read complete docs [here](docs/README.md).
+
+## FAQ
+
+- Why cloud provider specific information, such as zone/region/location etc.
+  does not appear in the cluster spec? 
+  - The purpose of Kubeformation is to bootstrap a cloud provider specific
+    template that you can later modify according to your needs.
