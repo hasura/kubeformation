@@ -15,6 +15,15 @@ var rootCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	RunE:          runKubeformation,
+	Example: `  # Render template for the cluster defined in 'cluster.yaml' and
+  # write it to 'templates' directory. If the directory does not exist, it is
+  # created. If the directory exists, files inside it will be over-written
+  $ kubeformation -f cluster.yaml -o templates
+
+  # Take the cluster spec from stdin
+  $ cat cluster.yaml | kubeformation -o templates -f -
+
+  # NOTE: Validation of values for each provider is not implemented yet.`,
 }
 
 var versionCmd = &cobra.Command{
@@ -25,15 +34,19 @@ var versionCmd = &cobra.Command{
 		fmt.Println(GetVersion())
 		return nil
 	},
+	Example: `  # Print the version string:
+  $ kubeformation version`,
 }
 var kfm Kubeformation
 
 func init() {
 	rootCmd.Flags().StringVarP(&kfm.InputFile, "file", "f", "", "cluster spec file to read (- to read from stdin)")
 	rootCmd.MarkFlagRequired("file")
+	rootCmd.MarkFlagFilename("file")
 	rootCmd.Flags().StringVarP(&kfm.ProviderValue, "provider", "p", "", "managed kubernetes provider for which template has to be bootstrapped")
 	rootCmd.Flags().StringVarP(&kfm.OutputDir, "output", "o", "", "output directory to write templates")
 	rootCmd.MarkFlagRequired("output")
+	rootCmd.MarkFlagFilename("output")
 
 	rootCmd.AddCommand(versionCmd)
 }

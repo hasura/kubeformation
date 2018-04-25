@@ -9,16 +9,34 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+
+	"github.com/pkg/errors"
 )
 
-func RenderProviderTemplate() http.Handler {
+func getContextLogger(l *log.Logger, w http.ResponseWriter, r *http.Request) func(e error, m string, c int) {
+	// FIXME: requestID is not set properly
+	requestID, ok := r.Context().Value(0).(string)
+	if !ok {
+		requestID = "unknown"
+	}
+	return func(e error, m string, c int) {
+		if e != nil {
+			l.Println(requestID, "ERROR", m, e.Error())
+			http.Error(w, m, c)
+		} else {
+			l.Println(requestID, m)
+		}
+	}
+}
+
+func RenderProviderTemplate(l *log.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		logger := getContextLogger(l, w, r)
 		switch r.Method {
 		case "POST":
 			data, err := ioutil.ReadAll(r.Body)
 			if err != nil {
-				log.Printf("Error reading body: %v", err)
-				http.Error(w, "cannot read request body", http.StatusBadRequest)
+				logger(err, "cannot read requests body", http.StatusBadRequest)
 				return
 			}
 
@@ -27,23 +45,20 @@ func RenderProviderTemplate() http.Handler {
 			if len(dlQueryParam) > 0 {
 				download, err = strconv.ParseBool(dlQueryParam)
 				if err != nil {
-					log.Printf("Error reading query param as bool: %v", err)
-					http.Error(w, "error reading query param as bool", http.StatusBadRequest)
+					logger(err, "error reading query param as bool", http.StatusBadRequest)
 					return
 				}
 			}
 
 			out, err := runKubeformationAPI(data)
 			if err != nil {
-				log.Printf("Error parsing body and generating template: %v", err)
-				http.Error(w, "error parsing body and generating template", http.StatusInternalServerError)
+				logger(err, "error parsing body and generating template", http.StatusInternalServerError)
 				return
 			}
 
 			response, err := json.Marshal(convertByteMapToString(out))
 			if err != nil {
-				log.Printf("Error converting output to JSON: %v", err)
-				http.Error(w, "cannot convert output to JSON", http.StatusInternalServerError)
+				logger(err, "cannot convert output to JSON", http.StatusInternalServerError)
 				return
 			}
 
@@ -53,8 +68,7 @@ func RenderProviderTemplate() http.Handler {
 				zipFileName := filepath.Base(zipFile)
 
 				if err != nil {
-					log.Printf("Error converting output to zip: %v", err)
-					http.Error(w, "cannot convert output to zip", http.StatusInternalServerError)
+					logger(err, "cannot convert output to zip", http.StatusInternalServerError)
 					return
 				}
 				w.Header().Set("Content-Disposition", "attachment; filename="+zipFileName+".zip")
@@ -66,7 +80,7 @@ func RenderProviderTemplate() http.Handler {
 			w.Write(response)
 
 		default:
-			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			logger(errors.New("method not allowed"), "method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
 }

@@ -36,7 +36,7 @@ func main() {
 
 	router := http.NewServeMux()
 	// router.Handle("/", index())
-	router.Handle("/render", cmd.RenderProviderTemplate())
+	router.Handle("/render", cmd.RenderProviderTemplate(logger))
 	router.Handle("/healthz", healthz())
 
 	nextRequestID := func() string {
