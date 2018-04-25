@@ -6,5 +6,5 @@ Bootstrap cloud vendor specific declarative templates from a simple spec for a K
 - [Providers](providers/providers.md)
   - [GKE](providers/gke.md)
   - [AKS](providers/aks.md)
-- [CLI](cli.md)
+- [CLI](cli/kubeformation.md)
 - [API](api.md)
