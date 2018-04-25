@@ -1,10 +1,26 @@
 # kubeformation
 
-Bootstrap cloud vendor specific declarative templates from a simple spec for a Kubernetes cluster.
+Create declarative specifications for your managed Kubernetes cloud vendor (GKE, AKS).
 
 [![GoDoc](https://godoc.org/github.com/hasura/kubeformation?status.svg)](https://godoc.org/github.com/hasura/kubeformation) 
 
-## What is kubeformation?
+## Motivation
+
+With Kubernetes, it becomes possible to start making everything about your application declarative. As cloud vendors start providing managed Kubernetes services, provisioning a Kubernetes cluster via the vendor’s API becomes declarative as well.
+
+Kubeformation is a simple web UI and CLI that helps you create “Google Deployment manager” or “Azure Resoure Manager” templates which are a _little_ painful to create by hand.
+
+Once you have this file, you can run your cloud vendor CLI on it to provision your cluster. You can edit this file to add vendor specific configuration too.
+
+## Usage
+
+Head to https://kubeformation.sh, build a cluster, download the templates
+
+**or** 
+
+Write cluster.yaml yourself, use the `kubeformation` CLI
+
+## Example
 
 Let's look at a spec that defines a Kubernetes cluster: `cluster.yaml`
 
@@ -40,4 +56,4 @@ following providers are supported:
 1. Google Kubernetes Engine (GKE)
 2. Azure Container Service (AKS)
 
-Amazon Elastic Container Service for Kubernetes (EKS) is a work in progress.
+Read complete docs [here](https://hasura.github.io/kubeformation).
