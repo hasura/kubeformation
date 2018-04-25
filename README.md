@@ -56,4 +56,4 @@ following providers are supported:
 1. Google Kubernetes Engine (GKE)
 2. Azure Container Service (AKS)
 
-Read complete docs [here](https://hasura.github.io/kubeformation).
+Read complete docs [here](docs/README.md).
