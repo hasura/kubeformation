@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/cobra/doc"
 )
 
 var ErrInvalidUsage = errors.New("kubeformation: invalid command usage")
@@ -37,6 +38,19 @@ var versionCmd = &cobra.Command{
 	Example: `  # Print the version string:
   $ kubeformation version`,
 }
+
+var docsCmd = &cobra.Command{
+	Use:    "docs",
+	Hidden: true,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		err := doc.GenMarkdownTree(rootCmd, "./")
+		if err != nil {
+			return err
+		}
+		return nil
+	},
+}
+
 var kfm Kubeformation
 
 func init() {
@@ -49,6 +63,7 @@ func init() {
 	rootCmd.MarkFlagFilename("output")
 
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(docsCmd)
 }
 
 func Execute() error {
