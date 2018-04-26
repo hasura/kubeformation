@@ -185,6 +185,7 @@ spec:
     requests:
       storage: {{ .SizeGB }}Gi
   volumeName: {{ .Name }}
+  storageClassName: standard
 {{- if ne $i $volumeLength }}
 ---
 {{ end -}}
