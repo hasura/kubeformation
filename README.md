@@ -2,7 +2,9 @@
 
 Create declarative specifications for your managed Kubernetes cloud vendor (GKE, AKS).
 
-[![GoDoc](https://godoc.org/github.com/hasura/kubeformation?status.svg)](https://godoc.org/github.com/hasura/kubeformation) 
+[![GoDoc](https://godoc.org/github.com/hasura/kubeformation?status.svg)](https://godoc.org/github.com/hasura/kubeformation)
+[![Chat on Discord](https://img.shields.io/discord/407792526867693568.svg?logo=discord)](https://discord.gg/TEPDKXe)
+[![Follow on Twitter](https://img.shields.io/twitter/follow/kubeformation.svg?style=social&logo=twitter)](https://twitter.com/intent/follow?screen_name=kubeformation)
 
 ## Motivation
 
@@ -97,3 +99,26 @@ Read complete docs [here](docs/README.md).
   does not appear in the cluster spec? 
   - The purpose of Kubeformation is to bootstrap a cloud provider specific
     template that you can later modify according to your needs.
+
+## Roadmap
+
+Kubeformation is open to evolution. Current goal is to support all managed
+Kubernetes vendors that support declarative specification.
+
+- EKS support ([#10](https://github.com/hasura/kubeformation/issues/10))
+- Other providers ([#11](https://github.com/hasura/kubeformation/issues/11))
+
+## Contributing
+
+Kubeformation is an open source project licensed under [Apache
+2.0](https://github.com/hasura/kubeformation/blob/master/LICENSE). Checkout the
+[contributing
+guide](https://github.com/hasura/kubeformation/blob/master/CONTRIBUTING.md) to
+get started. 
+
+## Maintainers
+
+Current maintainers: [@shahidh_k](https://twitter.com/shahidh_k),
+[@arvishankar](https://twitter.com/arvishankar),
+[@JaisonTitus](https://twitter.com/JaisonTitus). 
+
