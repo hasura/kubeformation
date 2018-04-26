@@ -51,7 +51,7 @@ func TestMarshalFiles(t *testing.T) {
 
 resources:
 - name:  gke-cluster
-  type: cluster.jinja
+  type: gke-cluster.jinja
   properties:
     name: gke-cluster
     project: PROJECT

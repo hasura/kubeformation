@@ -53,7 +53,7 @@ var clusterYaml = `imports:
 
 resources:
 - name:  {{ .Name }}
-  type: cluster.jinja
+  type: gke-cluster.jinja
   properties:
     name: {{ .Name }}
     project: PROJECT
