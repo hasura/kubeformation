@@ -6,7 +6,7 @@ Create declarative specifications for your managed Kubernetes cloud vendor (GKE,
 [![Chat on Discord](https://img.shields.io/discord/407792526867693568.svg?logo=discord)](https://discord.gg/TEPDKXe)
 [![Follow on Twitter](https://img.shields.io/twitter/follow/kubeformation.svg?style=social&logo=twitter)](https://twitter.com/intent/follow?screen_name=kubeformation)
 
-[![Kubeformation Diagram](assets/kubeformation-diagram.svg)]
+![Kubeformation Diagram](assets/kubeformation-diagram.svg)
 
 ## Motivation
 
