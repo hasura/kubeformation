@@ -24,14 +24,7 @@ your cluster. You can edit this file to add vendor specific configuration too.
 
 ## Usage
 
-- Head to https://kubeformation.sh
-- Build a cluster spec.
-- Download the template.
-- Follow provider specific instructions to create the cluster. [[docs]](docs/providers/providers.md)
-
-**or** 
-
-- Write cluster spec yourself. [[docs]](docs/spec/v1.md)
+- Write cluster spec. [[docs]](docs/spec/v1.md)
 - Use the `kubeformation` CLI to generate template. [[docs]](docs/cli/kubeformation.md)
 - Follow provider specific instructions to create the cluster. [[docs]](docs/providers/providers.md)
 
